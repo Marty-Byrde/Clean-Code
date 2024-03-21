@@ -56,4 +56,15 @@ public class PrinterTests {
         assertEquals("language: <de>", report.get(1));
         assertEquals("## I am a sample heading.", report.get(2));
     }
+
+    @Test
+    public void testCreateReport_Depth_1 () throws IOException {
+        when(mockedValidPageInfo.getDepth()).thenReturn(1);
+
+        List<String> report = Printer.createReport(mockedValidPageInfo);
+
+        assertEquals("input: <http://link.at>", report.get(0));
+        assertEquals("language: <de>", report.get(1));
+        assertEquals("## -> I am a sample heading.", report.get(2));
+    }
 }
