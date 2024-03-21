@@ -20,6 +20,22 @@ public class Crawler {
         this.config = config;
     }
 
+    public PageInfo retrievePageInfo (String url, String[] domains, int depth) {
+        PageInfo result = new PageInfo(url, "", new Elements(), new ArrayList<>(), depth);
+        Document document = getDocument(url);
+
+        //* In case one cannot connect to the requested URL
+        if (document == null) return result;
+
+        System.out.println();
+        System.out.println("Crawling: " + document.title());
+
+        result.setLanguage(getSourceLanguage(document));
+        result.setHeadings(document.select("h1, h2, h3, h4, h5, h6"));
+        result.setPageLinks(removeLinkLoops(url, getFilteredPageLinks(document, domains)));
+
+        return result;
+    }
 
     /**
      * @implNote Would be private if it wasn't for testing purposes.
