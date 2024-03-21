@@ -36,6 +36,13 @@ public class Crawler {
         return null;
     }
 
+
+    private ArrayList<String> getFilteredPageLinks (Document document, String[] allowedDomains) {
+        Elements anchors = document.select("a[href]");
+        removeWrongDomainLinks(anchors, allowedDomains);
+        return removeDuplicateLinks(anchors);
+    }
+
     private String getSourceLanguage (Document document) {
         String sourceLanguageISO = document.getElementsByTag("html").attr("lang");
         return sourceLanguageISO.split("-")[0];
