@@ -4,12 +4,29 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 
 public class Translater {
+    
+    /**
+     * Translates the given text to the target language. However, each translation consumes one API call.
+     * @param text Text to be translated
+     * @param targetLanguage Language to translate the text to
+     * @return Translated text
+     * @apiNote Since the free-tier is limited to 1000 calls per month, use this method wisely.
+     */
+    public static String translate (String text, String targetLanguage) throws IOException, InterruptedException {
+        if (!System.getenv().containsKey("API_KEY")) {
+            return text + " (Not translated because of missing API-Key)";
+        }
 
+        String escaped = URLEncoder.encode(text, StandardCharsets.US_ASCII);
+        return callAPI("&text=" + escaped + "&target_language=" + targetLanguage);
+    }
 
     private static String callAPI (String body) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
