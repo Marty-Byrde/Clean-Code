@@ -20,6 +20,10 @@ public class Crawler {
         this.config = config;
     }
 
+    public PageInfo crawl () throws IOException {
+        return getPage(config.getUrl(), 0, config.getMaxDepth(), config.getDomains());
+    }
+
     private PageInfo getPage (String url, int currentDepth, int maxDepth, String[] allowedDomains) throws IOException {
         if (currentDepth >= maxDepth) return null;
         System.out.println("Crawling-Depth: " + currentDepth);
