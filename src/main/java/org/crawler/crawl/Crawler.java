@@ -36,7 +36,7 @@ public class Crawler {
         return page;
     }
 
-    public PageInfo retrievePageInfo (String url, String[] domains, int depth) {
+    private PageInfo retrievePageInfo (String url, String[] domains, int depth) {
         PageInfo result = new PageInfo(url, "", new Elements(), new ArrayList<>(), depth);
         Document document = getDocument(url);
 
