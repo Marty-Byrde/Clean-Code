@@ -16,4 +16,12 @@ public class TranslationTests {
         String translation = Translater.translate("Hello World", "de");
         Assertions.assertEquals("Hallo Welt", translation);
     }
+
+    @Test
+    public void testTranslate_MissingKey () throws IOException, InterruptedException {
+        Assertions.assertNull(System.getenv().get("API_KEY"));
+
+        String translation = Translater.translate("Hello World", "de");
+        Assertions.assertEquals("Hello World (Not translated because of missing API-Key)", translation);
+    }
 }
