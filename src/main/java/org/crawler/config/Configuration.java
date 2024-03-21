@@ -9,6 +9,9 @@ public class Configuration {
     private String url;
     private int maxDepth;
     private String[] domains;
+    
+    //! not used due to the api-limitation of 1000 requests per month.
+    @SuppressWarnings("FieldCanBeLocal")
     private String targetLanguage;
 
     public Configuration (String url, int maxDepth, String[] domains, String targetLanguage) {
