@@ -44,4 +44,15 @@ class CrawlerTests {
         Assertions.assertEquals(brokenPageInfo.getPageLinks(), info.getPageLinks());
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"https://orf.at/", "https://www.derstandard.at/"})
+    public void test_retrievePageInfo (String url) {
+        PageInfo info = crawler.retrievePageInfo(url, new String[]{}, 0);
+
+        Assertions.assertEquals(url, info.getUrl());
+        Assertions.assertNotEquals("", info.getLanguage());
+        Assertions.assertNotEquals(0, info.getHeadings().size());
+        Assertions.assertNotEquals(0, info.getPageLinks().size());
+    }
+
 }
