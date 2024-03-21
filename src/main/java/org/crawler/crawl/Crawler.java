@@ -6,6 +6,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.jsoup.select.NodeFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,6 +60,21 @@ public class Crawler {
         }
 
         return links;
+    }
+
+    private void removeWrongDomainLinks (Elements anchors, String[] allowedDomains) {
+        anchors.filter((anchor, index) -> {
+            String href = anchor.attr("abs:href");
+
+            if (href.isEmpty()) return NodeFilter.FilterResult.SKIP_ENTIRELY;
+
+            // Skipping non-relevant links.
+            if (!isRequestedDomain(href, allowedDomains)) {
+                return NodeFilter.FilterResult.SKIP_ENTIRELY;
+            }
+
+            return NodeFilter.FilterResult.CONTINUE;
+        });
     }
 
 }
