@@ -1,12 +1,17 @@
+import org.crawler.Printer;
 import org.crawler.crawl.PageInfo;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 
@@ -39,5 +44,16 @@ public class PrinterTests {
         mockedElements.add(mockedElement);
 
         when(mockedValidPageInfo.getHeadings()).thenReturn(mockedElements);
+    }
+
+    @Test
+    public void testCreateReport_Depth_0 () throws IOException {
+        when(mockedValidPageInfo.getDepth()).thenReturn(0);
+
+        List<String> report = Printer.createReport(mockedValidPageInfo);
+
+        assertEquals("input: <http://link.at>", report.get(0));
+        assertEquals("language: <de>", report.get(1));
+        assertEquals("## I am a sample heading.", report.get(2));
     }
 }
