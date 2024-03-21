@@ -47,7 +47,7 @@ public class PrinterTests {
     }
 
     @Test
-    public void testCreateReport_Depth_0 () throws IOException {
+    public void testCreateReport_Depth_0() throws IOException {
         when(mockedValidPageInfo.getDepth()).thenReturn(0);
 
         List<String> report = Printer.createReport(mockedValidPageInfo);
@@ -58,7 +58,7 @@ public class PrinterTests {
     }
 
     @Test
-    public void testCreateReport_Depth_1 () throws IOException {
+    public void testCreateReport_Depth_1() throws IOException {
         when(mockedValidPageInfo.getDepth()).thenReturn(1);
 
         List<String> report = Printer.createReport(mockedValidPageInfo);
@@ -67,4 +67,19 @@ public class PrinterTests {
         assertEquals("language: <de>", report.get(1));
         assertEquals("## -> I am a sample heading.", report.get(2));
     }
+
+    @Test
+    public void testCreateReport_InvalidPageInfo() throws IOException {
+        when(mockedInvalidPageInfo.isBroken()).thenReturn(true);
+        when(mockedInvalidPageInfo.getLanguage()).thenReturn("");
+
+
+        List<String> report = Printer.createReport(mockedInvalidPageInfo);
+
+        assertEquals(3, report.size());
+        assertEquals("input: <http://link.at>", report.get(0));
+        assertEquals("language: <>", report.get(1));
+        assertEquals("Broken page!", report.get(2));
+    }
+
 }
