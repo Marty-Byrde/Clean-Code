@@ -30,5 +30,10 @@ public class Crawler {
         }
         return null;
     }
-    
+
+
+    private String getSourceLanguage (Document document) {
+        String sourceLanguageISO = document.getElementsByTag("html").attr("lang");
+        return sourceLanguageISO.split("-")[0];
+    }
 }
