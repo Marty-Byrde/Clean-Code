@@ -14,7 +14,6 @@ public class Main {
         }
 
         Configuration config = Configuration.requestConfiguration();
-//      Configuration config = new Configuration("https://orf.at/", 3, new String[]{}, "german");
         Crawler crawler = new Crawler(config);
         PageInfo result = crawler.crawl();
         Printer.printReport(Printer.createReport(result));
