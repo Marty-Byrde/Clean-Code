@@ -31,9 +31,20 @@ public class Crawler {
         return null;
     }
 
-
     private String getSourceLanguage (Document document) {
         String sourceLanguageISO = document.getElementsByTag("html").attr("lang");
         return sourceLanguageISO.split("-")[0];
     }
+
+    /**
+     * Filters out the links that are not from the requested domain.
+     * @return In case the link is from the requested domain, then true is returned, otherwise false. If no domains are specified, then the link's domain is accepted automatically.
+     */
+    private boolean isRequestedDomain (String link, String[] domains) {
+        for (String domain : domains) {
+            if (!link.contains(domain)) return false;
+        }
+        return true;
+    }
+
 }
