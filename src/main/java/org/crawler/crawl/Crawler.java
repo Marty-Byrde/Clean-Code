@@ -4,8 +4,11 @@ import org.crawler.config.Configuration;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class Crawler {
@@ -45,6 +48,17 @@ public class Crawler {
             if (!link.contains(domain)) return false;
         }
         return true;
+    }
+
+
+    private ArrayList<String> removeDuplicateLinks (Elements anchors) {
+        ArrayList<String> links = new ArrayList<>();
+        for (Element anchor : anchors) {
+            String href = anchor.attr("abs:href");
+            if (!links.contains(href)) links.add(href);
+        }
+
+        return links;
     }
 
 }
