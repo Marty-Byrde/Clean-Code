@@ -10,6 +10,7 @@ import org.jsoup.select.NodeFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class Crawler {
@@ -77,4 +78,7 @@ public class Crawler {
         });
     }
 
+    private List<String> removeLinkLoops (String origin, List<String> links) {
+        return links.stream().filter(href -> !href.equals(origin)).toList();
+    }
 }
