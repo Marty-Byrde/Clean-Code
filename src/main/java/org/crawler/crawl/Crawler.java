@@ -20,6 +20,18 @@ public class Crawler {
         this.config = config;
     }
 
+    private PageInfo getPage (String url, int currentDepth, int maxDepth, String[] allowedDomains) throws IOException {
+        if (currentDepth >= maxDepth) return null;
+        System.out.println("Crawling-Depth: " + currentDepth);
+        PageInfo page = retrievePageInfo(url, allowedDomains, currentDepth);
+
+        List<String> links_to_crawl = page.getPageLinks();
+        System.out.println("-> Page has " + links_to_crawl.size() + " sublinks...");
+
+        recursion(page, currentDepth, maxDepth, allowedDomains);
+        return page;
+    }
+
     public PageInfo retrievePageInfo (String url, String[] domains, int depth) {
         PageInfo result = new PageInfo(url, "", new Elements(), new ArrayList<>(), depth);
         Document document = getDocument(url);
@@ -35,6 +47,22 @@ public class Crawler {
         result.setPageLinks(removeLinkLoops(url, getFilteredPageLinks(document, domains)));
 
         return result;
+    }
+
+    private void recursion (PageInfo originPage, int currentDepth, int maxDepth, String[] allowedDomains) throws IOException {
+        List<String> links_to_crawl = originPage.getPageLinks();
+        System.out.println("-> Page has " + links_to_crawl.size() + " sublinks...");
+
+
+        ArrayList<PageInfo> results = new ArrayList<>();
+        for (String link : links_to_crawl) {
+            PageInfo recursiveResult = getPage(link, currentDepth + 1, maxDepth, allowedDomains);
+            if (recursiveResult != null) results.add(recursiveResult);
+
+            if (results.size() == 10) break;
+        }
+
+        originPage.setSubPagesInfo(results);
     }
 
     /**
