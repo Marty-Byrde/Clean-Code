@@ -11,7 +11,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
 public class Translater {
-    
+
     /**
      * Translates the given text to the target language. However, each translation consumes one API call.
      * @param text Text to be translated
@@ -39,6 +39,25 @@ public class Translater {
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
         JSONObject json = new JSONObject(response.body());
+        String status = json.getString("status");
+
+        if (!status.equals("success")) {
+            return handleError(body);
+        }
+        
         return json.getJSONObject("data").getString("translatedText");
+    }
+
+
+    private static String handleError (String request_body) {
+        String[] arguments = request_body.split("&");
+        String text = "";
+
+        for (String argument : arguments) {
+            if (!argument.contains("text=")) continue;
+            text = argument.split("=")[1];
+        }
+
+        return text + " (Not translated because of translation error)";
     }
 }
