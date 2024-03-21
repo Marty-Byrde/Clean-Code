@@ -8,4 +8,12 @@
 /dataSources.local.xml
 
 /inspectionProfiles/Project_Default.xml
-discord.xml
+
+!compiler.xml
+!gradle.xml
+!jarRepositories.xml
+!misc.xml
+!vcs.xml
+!workspace.xml
+
+*.xml
