@@ -36,7 +36,10 @@ public class Crawler {
         return page;
     }
 
-    private PageInfo retrievePageInfo (String url, String[] domains, int depth) {
+    /**
+     * @implNote Would be private if it wasn't for testing purposes.
+     */
+    public PageInfo retrievePageInfo (String url, String[] domains, int depth) {
         PageInfo result = new PageInfo(url, "", new Elements(), new ArrayList<>(), depth);
         Document document = getDocument(url);
 
