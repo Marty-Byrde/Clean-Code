@@ -2,8 +2,21 @@ package org.crawler;
 
 import org.jsoup.nodes.Element;
 
-public class Printer {
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
 
+public class Printer {
+    public static void printReport (List<String> lines) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter("./report.md"));
+        for (String line : lines) {
+            writer.write(line);
+            writer.newLine();
+        }
+
+        writer.close();
+    }
 
     private static int getHeadingLevel (Element heading) {
         if (!heading.tagName().startsWith("h") && heading.tagName().length() != 2) return -1;
