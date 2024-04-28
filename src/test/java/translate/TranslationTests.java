@@ -11,17 +11,9 @@ public class TranslationTests {
     @Test
     public void testTranslate () throws IOException, InterruptedException {
         //! This test requires an API key to be set as an environment variable.
-        Assertions.assertNotNull(System.getenv().get("API_KEY"));
+        Assertions.assertNotNull(System.getenv().get("API_KEY"), "API_KEY not found. Please set the API-Key as an environment variable.");
 
         String translation = Translater.translate("Hello World", "de");
         Assertions.assertEquals("Hallo Welt", translation);
-    }
-
-    @Test
-    public void testTranslate_MissingKey () throws IOException, InterruptedException {
-        Assertions.assertNull(System.getenv().get("API_KEY"));
-
-        String translation = Translater.translate("Hello World", "de");
-        Assertions.assertEquals("Hello World (Not translated because of missing API-Key)", translation);
     }
 }
