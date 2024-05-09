@@ -20,11 +20,11 @@ public class Crawler {
         this.config = config;
     }
 
-    public PageInfo crawl () throws IOException {
+    public PageInfo crawl () {
         return getPage(config.getUrl(), 0, config.getMaxDepth(), config.getDomains());
     }
 
-    private PageInfo getPage (String url, int currentDepth, int maxDepth, String[] allowedDomains) throws IOException {
+    private PageInfo getPage (String url, int currentDepth, int maxDepth, String[] allowedDomains) {
         if (currentDepth >= maxDepth) return null;
         System.out.println("Crawling-Depth: " + currentDepth);
         PageInfo page = retrievePageInfo(url, allowedDomains, currentDepth);
@@ -56,7 +56,7 @@ public class Crawler {
         return result;
     }
 
-    private void recursion (PageInfo originPage, int currentDepth, int maxDepth, String[] allowedDomains) throws IOException {
+    private void recursion (PageInfo originPage, int currentDepth, int maxDepth, String[] allowedDomains) {
         List<String> links_to_crawl = originPage.getPageLinks();
         System.out.println("-> Page has " + links_to_crawl.size() + " sublinks...");
 
