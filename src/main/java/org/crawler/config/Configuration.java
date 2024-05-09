@@ -35,7 +35,7 @@ public class Configuration {
             System.out.println(Colorizer.colorize("Welcome to the Crawler-Configuration-Tool!", Green, bold));
 
             System.out.print(Colorizer.colorize("Please enter the URL you want to crawl: ", Cyan));
-            String url = reader.readLine();
+            String url = validate(reader.readLine(), "https://www.orf.at/", "(Default): No value has been entered. Default: 'https://www.orf.at/'");
 
             System.out.print(Colorizer.colorize("Please enter the maximum depth you want to crawl (max. 2):", Cyan));
             int maxDepth = Math.max(validate(reader.readLine(), 1, "(Default): No value has been entered. Default: 1"), 2);
