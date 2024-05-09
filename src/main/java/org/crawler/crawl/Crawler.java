@@ -1,5 +1,6 @@
 package org.crawler.crawl;
 
+import org.crawler.Console.Console;
 import org.crawler.config.Configuration;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -11,6 +12,8 @@ import org.jsoup.select.NodeFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.crawler.Console.Color.Red;
 
 
 public class Crawler {
@@ -80,9 +83,9 @@ public class Crawler {
             Connection connection = Jsoup.connect(url);
             return connection.get();
         } catch (IOException e) {
-            System.out.println("Error while connecting to the URL: " + url);
+            Console.print(Red, "Retrieval was not successful for", url, "due to an IOException.");
         } catch (Exception ignored) {
-            System.out.println("Please provide a valid URL");
+            Console.print(Red, "Retrieving document from", url, "failed.");
         }
         return null;
     }
