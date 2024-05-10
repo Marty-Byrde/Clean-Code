@@ -28,7 +28,7 @@ public class Crawler {
     }
 
     private PageInfo getPage (String url, int currentDepth, int maxDepth, String[] allowedDomains) {
-        if (currentDepth >= maxDepth) return null;
+        if (currentDepth > maxDepth) return null;
         System.out.println("Crawling-Depth: " + currentDepth);
         PageInfo page = retrievePageInfo(url, allowedDomains, currentDepth);
 
