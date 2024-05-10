@@ -24,8 +24,8 @@ public class PageInfo {
         this.depth = depth;
     }
 
-    public boolean isBroken () {
-        return language.isEmpty();
+    public boolean isEmpty () {
+        return language.isEmpty() && headings.isEmpty();
     }
 
     public List<String> getPageLinks () {
