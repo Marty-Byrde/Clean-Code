@@ -13,6 +13,8 @@ public class PageInfo {
     private List<String> pageLinks;
     private ArrayList<PageInfo> subPagesInfo = new ArrayList<>();
     private int depth;
+    private boolean failed = false;
+    private String failureReson;
 
     public PageInfo (String url, String language, Elements headings, List<String> pageLinks, int depth) {
         this.url = url;
@@ -64,6 +66,19 @@ public class PageInfo {
 
     public int getDepth () {
         return depth;
+    }
+
+    public void setFailed (String failureReson) {
+        this.failed = true;
+        this.failureReson = failureReson;
+    }
+
+    public String getFailureReson () {
+        return this.failureReson;
+    }
+
+    public boolean hasFailed () {
+        return this.failed;
     }
 
     @Override
