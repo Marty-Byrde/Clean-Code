@@ -1,15 +1,22 @@
 package org.crawler.config;
 
+import org.crawler.Console.Colorizer;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
+import static org.crawler.Console.Color.Cyan;
+import static org.crawler.Console.Color.Green;
+import static org.crawler.Console.ColorType.bold;
+import static org.crawler.config.InputValidation.validate;
 
 public class Configuration {
 
     private String url;
     private int maxDepth;
     private String[] domains;
-    
+
     //! not used due to the api-limitation of 1000 requests per month.
     @SuppressWarnings("FieldCanBeLocal")
     private String targetLanguage;
@@ -25,22 +32,26 @@ public class Configuration {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         try {
-            System.out.println("Please enter the URL you want to crawl: ");
-            String url = reader.readLine();
+            System.out.println(Colorizer.colorize("Welcome to the Crawler-Configuration-Tool!", Green, bold));
 
-            System.out.println("Please enter the maximum depth you want to crawl (max. 2): ");
-            int maxDepth = Math.max(Integer.parseInt(reader.readLine()), 2);
+            System.out.print(Colorizer.colorize("Please enter the URL you want to crawl: ", Cyan));
+            String url = validate(reader.readLine(), "https://www.orf.at/", "(Default): No value has been entered. Default: 'https://www.orf.at/'");
 
-            System.out.println("Please enter the domains you want to crawl: ");
+            System.out.print(Colorizer.colorize("Please enter the maximum depth you want to crawl (max. 2):", Cyan));
+            int maxDepth = Math.max(validate(reader.readLine(), 1, "(Default): No value has been entered. Default: 1"), 2);
+
+
+            System.out.println();
             System.out.println("Separate multiple domains with a comma (,)");
             System.out.println("To allow all domains, leave the field empty");
             System.out.println("Example: google.com, orf.at");
+            System.out.print(Colorizer.colorize("Please enter the domains you want to crawl: ", Cyan));
+            String domainInput = validate(reader.readLine(), "", "(Default): No value has been entered. Default: All domains");
+            String[] domains = domainInput.trim().split(",");
 
-            String[] domains = reader.readLine().trim().split(",");
 
-            System.out.println("Please enter the language you want to crawl: ");
-            System.out.println("Example: en, de");
-            String language = reader.readLine();
+            System.out.print(Colorizer.colorize("Please enter the language you want to crawl (Example: en, de): ", Cyan));
+            String language = validate(reader.readLine(), "en", "(Default): No value has been entered. Default: en");
 
 
             return new Configuration(url, maxDepth, domains, language);
