@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.crawler.Console.Color.Red;
+
 
 public class Crawler {
     private Configuration config;
@@ -44,6 +46,8 @@ public class Crawler {
         try {
             document = getDocument(url);
         } catch (IOException e) {
+            Console.print(Red, "Document Retrieval for", url, "failed.");
+            
             //* In case one cannot connect to the requested URL
             result.setFailureReason(e.toString());
             return result;
