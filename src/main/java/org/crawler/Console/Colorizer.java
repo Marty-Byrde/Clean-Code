@@ -29,6 +29,8 @@ public class Colorizer {
      * @return the colorized message
      */
     public static String colorize (String message, Color color) {
+        if (!Console.colorizeLogs) return message;
+
         String colorCode = colorMap.get(color.name()).get(ColorType.regular);
         return colorCode + message + RESET;
     }
@@ -41,6 +43,8 @@ public class Colorizer {
      * @return the colorized message
      */
     public static String colorize (String message, Color color, ColorType type) {
+        if (!Console.colorizeLogs) return message;
+
         String colorCode = colorMap.get(color.name()).get(type);
         return colorCode + message + RESET;
     }

@@ -6,6 +6,8 @@ import static org.crawler.Console.ColorType.bright;
 import static org.crawler.Console.Colorizer.colorize;
 
 public class Console {
+    public static boolean colorizeLogs = true;
+
     /**
      * This method is used to get the caller's class name and line number.
      * @return A string containing the caller's class name and line number.
@@ -26,7 +28,7 @@ public class Console {
         String caller = getCallerInfo();
         String merge = String.join(" ", message);
 
-        System.out.println(caller + ": " + merge);
+        System.out.println(colorize(caller + ":", Yellow, bright) + " " + merge);
     }
 
     /**
