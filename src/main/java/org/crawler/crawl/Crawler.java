@@ -24,16 +24,14 @@ public class Crawler {
     }
 
     public PageInfo crawl (String url) {
+        Console.print("Crawler with id: " + Thread.currentThread().getId(), "is going to crawl", url, "\n");
         return getPage(url, 0, config.getMaxDepth(), config.getDomains());
     }
 
     private PageInfo getPage (String url, int currentDepth, int maxDepth, String[] allowedDomains) {
-        if (currentDepth >= maxDepth) return null;
-        System.out.println("Crawling-Depth: " + currentDepth);
+        if (currentDepth > maxDepth) return null;
         PageInfo page = retrievePageInfo(url, allowedDomains, currentDepth);
-
-        List<String> links_to_crawl = page.getPageLinks();
-        System.out.println("-> Page has " + links_to_crawl.size() + " sublinks...");
+        Console.print("[id: " + Thread.currentThread().getId() + "]:", page.getPageLinks().size() + "", "Sublinks found in (depth", (currentDepth) + ")", url);
 
         recursion(page, currentDepth, maxDepth, allowedDomains);
         return page;
@@ -44,13 +42,16 @@ public class Crawler {
      */
     public PageInfo retrievePageInfo (String url, String[] domains, int depth) {
         PageInfo result = new PageInfo(url, "", new Elements(), new ArrayList<>(), depth);
-        Document document = getDocument(url);
-
-        //* In case one cannot connect to the requested URL
-        if (document == null) return result;
-
-        System.out.println();
-        System.out.println("Crawling: " + document.title());
+        Document document = null;
+        try {
+            document = getDocument(url);
+        } catch (IOException e) {
+            Console.print(Red, "Document Retrieval for", url, "failed.");
+            
+            //* In case one cannot connect to the requested URL
+            result.setFailureReason(e.toString());
+            return result;
+        }
 
         result.setLanguage(getSourceLanguage(document));
         result.setHeadings(document.select("h1, h2, h3, h4, h5, h6"));
@@ -61,8 +62,6 @@ public class Crawler {
 
     private void recursion (PageInfo originPage, int currentDepth, int maxDepth, String[] allowedDomains) {
         List<String> links_to_crawl = originPage.getPageLinks();
-        System.out.println("-> Page has " + links_to_crawl.size() + " sublinks...");
-
 
         ArrayList<PageInfo> results = new ArrayList<>();
         for (String link : links_to_crawl) {
@@ -78,16 +77,9 @@ public class Crawler {
     /**
      * @implNote Would be private if it wasn't for testing purposes.
      */
-    public Document getDocument (String url) {
-        try {
-            Connection connection = Jsoup.connect(url);
-            return connection.get();
-        } catch (IOException e) {
-            Console.print(Red, "Retrieval was not successful for", url, "due to an IOException.");
-        } catch (Exception ignored) {
-            Console.print(Red, "Retrieving document from", url, "failed.");
-        }
-        return null;
+    public Document getDocument (String url) throws IOException {
+        Connection connection = Jsoup.connect(url);
+        return connection.get();
     }
 
 

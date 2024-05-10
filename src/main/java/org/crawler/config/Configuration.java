@@ -28,13 +28,20 @@ public class Configuration {
         this.targetLanguage = targetLanguage;
     }
 
+    public Configuration (String url, int maxDepth, String[] domains, String targetLanguage) {
+        this.urls = new String[]{url};
+        this.maxDepth = maxDepth;
+        this.domains = domains;
+        this.targetLanguage = targetLanguage;
+    }
+
     public static Configuration requestConfiguration () {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         try {
             System.out.println(Colorizer.colorize("Welcome to the Crawler-Configuration-Tool!", Green, bold));
 
-            System.out.println("Separate multiple domains with a comma (,), e.g. 'google.com, orf.at' or provide a single or e.g. 'google.com'");
+            System.out.println("Separate multiple domains with a comma (,), e.g. 'https://www.discord.com/, https://www.orf.at/' or provide a single or e.g. 'https://www.orf.at/'");
             System.out.print(Colorizer.colorize("Please enter the URL(s) you want to crawl: ", Cyan));
             String[] urls = validate(reader.readLine(), "https://www.orf.at/", "(Default): No value has been entered. Default: 'https://www.orf.at/'").split(",");
 

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.mock;
@@ -34,7 +35,7 @@ class CrawlerTests {
     public void setup () {
         crawler = new Crawler(config);
 
-        
+
         Element[] mockedPageHeadings = new Element[]{mockedHeading, mockedHeading, mockedHeading};
         Elements el = new Elements();
 
@@ -62,7 +63,7 @@ class CrawlerTests {
 
     @ParameterizedTest
     @ValueSource(strings = {"https://orf.at/", "https://www.derstandard.at/", "invalid.url.at"})
-    public void test_getDocument (String url) {
+    public void test_getDocument (String url) throws IOException {
         Document document = crawler.getDocument(url);
 
         if (url.startsWith("https://") || url.startsWith("http://")) Assertions.assertNotNull(document);

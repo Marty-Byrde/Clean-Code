@@ -29,7 +29,11 @@ public class Printer {
 
         lines.add(String.format("input: <%s>", page.getUrl()));
         lines.add(String.format("language: <%s>", page.getLanguage()));
-        if (page.isBroken()) lines.add("Broken page!");
+
+        if (page.hasFailed()) {
+            lines.add("Error: " + page.getFailureReson());
+            return lines;
+        } else if (page.isEmpty()) lines.add("This page is empty.");
 
         lines.addAll(formatPageHeadings(page));
         lines.addAll(createSubPagesReport(page));

@@ -13,6 +13,7 @@ public class PageInfo {
     private List<String> pageLinks;
     private ArrayList<PageInfo> subPagesInfo = new ArrayList<>();
     private int depth;
+    private String failureReson;
 
     public PageInfo (String url, String language, Elements headings, List<String> pageLinks, int depth) {
         this.url = url;
@@ -22,8 +23,8 @@ public class PageInfo {
         this.depth = depth;
     }
 
-    public boolean isBroken () {
-        return language.isEmpty();
+    public boolean isEmpty () {
+        return language.isEmpty() && headings.isEmpty();
     }
 
     public List<String> getPageLinks () {
@@ -39,7 +40,7 @@ public class PageInfo {
     }
 
     public String getLanguage () {
-        return language;
+        return language.isEmpty() ? "unknown" : language;
     }
 
     public void setLanguage (String language) {
@@ -64,6 +65,18 @@ public class PageInfo {
 
     public int getDepth () {
         return depth;
+    }
+
+    public void setFailureReason (String failureReson) {
+        this.failureReson = failureReson;
+    }
+
+    public String getFailureReson () {
+        return this.failureReson;
+    }
+
+    public boolean hasFailed () {
+        return this.failureReson != null && !this.failureReson.isEmpty();
     }
 
     @Override

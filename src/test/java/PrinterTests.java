@@ -23,7 +23,7 @@ public class PrinterTests {
 
 
     @BeforeEach
-    public void setUp() {
+    public void setUp () {
         when(mockedElement.tagName()).thenReturn("h2");
         when(mockedElement.text()).thenReturn("I am a sample heading.");
 
@@ -33,7 +33,7 @@ public class PrinterTests {
 
         when(mockedValidPageInfo.getPageLinks()).thenReturn(pageLinks);
         when(mockedValidPageInfo.getSubPagesInfo()).thenReturn(new ArrayList<>());
-        when(mockedValidPageInfo.isBroken()).thenReturn(false);
+        when(mockedValidPageInfo.isEmpty()).thenReturn(false);
         when(mockedValidPageInfo.getUrl()).thenReturn("http://link.at");
         when(mockedValidPageInfo.getLanguage()).thenReturn("de");
 
@@ -47,7 +47,7 @@ public class PrinterTests {
     }
 
     @Test
-    public void testCreateReport_Depth_0() throws IOException {
+    public void testCreateReport_Depth_0 () throws IOException {
         when(mockedValidPageInfo.getDepth()).thenReturn(0);
 
         List<String> report = Printer.createReport(mockedValidPageInfo);
@@ -58,7 +58,7 @@ public class PrinterTests {
     }
 
     @Test
-    public void testCreateReport_Depth_1() throws IOException {
+    public void testCreateReport_Depth_1 () throws IOException {
         when(mockedValidPageInfo.getDepth()).thenReturn(1);
 
         List<String> report = Printer.createReport(mockedValidPageInfo);
@@ -69,8 +69,8 @@ public class PrinterTests {
     }
 
     @Test
-    public void testCreateReport_InvalidPageInfo() throws IOException {
-        when(mockedInvalidPageInfo.isBroken()).thenReturn(true);
+    public void testCreateReport_InvalidPageInfo () throws IOException {
+        when(mockedInvalidPageInfo.isEmpty()).thenReturn(true);
         when(mockedInvalidPageInfo.getLanguage()).thenReturn("");
 
 
