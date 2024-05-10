@@ -13,7 +13,7 @@ import static org.crawler.config.InputValidation.validate;
 
 public class Configuration {
 
-    private String url;
+    private String[] urls;
     private int maxDepth;
     private String[] domains;
 
@@ -21,8 +21,8 @@ public class Configuration {
     @SuppressWarnings("FieldCanBeLocal")
     private String targetLanguage;
 
-    public Configuration (String url, int maxDepth, String[] domains, String targetLanguage) {
-        this.url = url;
+    public Configuration (String[] urls, int maxDepth, String[] domains, String targetLanguage) {
+        this.urls = urls;
         this.maxDepth = maxDepth;
         this.domains = domains;
         this.targetLanguage = targetLanguage;
@@ -34,8 +34,10 @@ public class Configuration {
         try {
             System.out.println(Colorizer.colorize("Welcome to the Crawler-Configuration-Tool!", Green, bold));
 
-            System.out.print(Colorizer.colorize("Please enter the URL you want to crawl: ", Cyan));
-            String url = validate(reader.readLine(), "https://www.orf.at/", "(Default): No value has been entered. Default: 'https://www.orf.at/'");
+            System.out.println("Separate multiple domains with a comma (,), e.g. 'google.com, orf.at' or provide a single or e.g. 'google.com'");
+            System.out.print(Colorizer.colorize("Please enter the URL(s) you want to crawl: ", Cyan));
+            String[] urls = validate(reader.readLine(), "https://www.orf.at/", "(Default): No value has been entered. Default: 'https://www.orf.at/'").split(",");
+
 
             System.out.print(Colorizer.colorize("Please enter the maximum depth you want to crawl (max. 2):", Cyan));
             int maxDepth = Math.max(validate(reader.readLine(), 1, "(Default): No value has been entered. Default: 1"), 2);
@@ -54,7 +56,7 @@ public class Configuration {
             String language = validate(reader.readLine(), "en", "(Default): No value has been entered. Default: en");
 
 
-            return new Configuration(url, maxDepth, domains, language);
+            return new Configuration(urls, maxDepth, domains, language);
         } catch (IOException e) {
             System.out.println("Error while reading input. Please try again.");
             return requestConfiguration();
@@ -62,8 +64,8 @@ public class Configuration {
     }
 
 
-    public String getUrl () {
-        return url;
+    public String[] getUrls () {
+        return urls;
     }
 
     public int getMaxDepth () {

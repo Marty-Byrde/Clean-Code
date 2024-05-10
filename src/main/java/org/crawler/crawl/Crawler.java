@@ -23,8 +23,8 @@ public class Crawler {
         this.config = config;
     }
 
-    public PageInfo crawl () {
-        return getPage(config.getUrl(), 0, config.getMaxDepth(), config.getDomains());
+    public PageInfo crawl (String url) {
+        return getPage(url, 0, config.getMaxDepth(), config.getDomains());
     }
 
     private PageInfo getPage (String url, int currentDepth, int maxDepth, String[] allowedDomains) {
