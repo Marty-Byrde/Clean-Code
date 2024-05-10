@@ -40,7 +40,7 @@ public class PageInfo {
     }
 
     public String getLanguage () {
-        return language;
+        return language.isEmpty() ? "unknown" : language;
     }
 
     public void setLanguage (String language) {
