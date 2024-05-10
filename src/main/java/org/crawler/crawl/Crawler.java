@@ -9,10 +9,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.jsoup.select.NodeFilter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.crawler.Console.Color.Red;
 
 
 public class Crawler {
@@ -40,11 +39,15 @@ public class Crawler {
      * @implNote Would be private if it wasn't for testing purposes.
      */
     public PageInfo retrievePageInfo (String url, String[] domains, int depth) {
-        PageInfo result = new PageInfo(url, "", new Elements(), new ArrayList<>(), depth);
-        Document document = getDocument(url);
-
-        //* In case one cannot connect to the requested URL
-        if (document == null) return result;
+        PageInfo result = new PageInfo(url, "unknown", new Elements(), new ArrayList<>(), depth);
+        Document document = null;
+        try {
+            document = getDocument(url);
+        } catch (IOException e) {
+            //* In case one cannot connect to the requested URL
+            result.setFailureReason(e.toString());
+            return result;
+        }
 
         result.setLanguage(getSourceLanguage(document));
         result.setHeadings(document.select("h1, h2, h3, h4, h5, h6"));
@@ -70,14 +73,9 @@ public class Crawler {
     /**
      * @implNote Would be private if it wasn't for testing purposes.
      */
-    public Document getDocument (String url) {
-        try {
-            Connection connection = Jsoup.connect(url);
-            return connection.get();
-        } catch (Exception e) {
-            Console.print(Red, "Document Retrieval for", url, "failed.");
-        }
-        return null;
+    public Document getDocument (String url) throws IOException {
+        Connection connection = Jsoup.connect(url);
+        return connection.get();
     }
 
 
