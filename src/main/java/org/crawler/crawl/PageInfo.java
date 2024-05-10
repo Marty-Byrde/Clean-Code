@@ -13,7 +13,6 @@ public class PageInfo {
     private List<String> pageLinks;
     private ArrayList<PageInfo> subPagesInfo = new ArrayList<>();
     private int depth;
-    private boolean failed = false;
     private String failureReson;
 
     public PageInfo (String url, String language, Elements headings, List<String> pageLinks, int depth) {
@@ -68,8 +67,7 @@ public class PageInfo {
         return depth;
     }
 
-    public void setFailed (String failureReson) {
-        this.failed = true;
+    public void setFailureReason (String failureReson) {
         this.failureReson = failureReson;
     }
 
@@ -78,7 +76,7 @@ public class PageInfo {
     }
 
     public boolean hasFailed () {
-        return this.failed;
+        return this.failureReson != null && !this.failureReson.isEmpty();
     }
 
     @Override
