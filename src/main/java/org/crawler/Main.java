@@ -1,22 +1,29 @@
 package org.crawler;
 
+import org.crawler.Console.Color;
+import org.crawler.Console.Console;
 import org.crawler.config.Configuration;
-import org.crawler.crawl.Crawler;
+import org.crawler.crawl.ConcurrencyHandler;
 import org.crawler.crawl.PageInfo;
 
-import java.io.IOException;
+import java.util.List;
 
 public class Main {
-    public static void main (String[] args) throws IOException {
+    public static void main (String[] args) {
         if (!System.getenv().containsKey("API_KEY")) {
             System.out.println("Translation API-Key not found. Please set the API-Key as an environment variable.");
             return;
         }
 
         Configuration config = Configuration.requestConfiguration();
-        Crawler crawler = new Crawler(config);
-        PageInfo result = crawler.crawl();
-        Printer.printReport(Printer.createReport(result));
 
+        ConcurrencyHandler handler = new ConcurrencyHandler(config);
+        List<PageInfo> thread_results = handler.getResults();
+
+        System.out.println();
+        Console.print(Color.Green, "All Crawlers have finished, for these urls:");
+        thread_results.forEach(result -> System.out.println(result.getUrl()));
+
+        Printer.printReports(thread_results);
     }
 }
