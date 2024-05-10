@@ -28,6 +28,13 @@ public class Configuration {
         this.targetLanguage = targetLanguage;
     }
 
+    public Configuration (String url, int maxDepth, String[] domains, String targetLanguage) {
+        this.urls = new String[]{url};
+        this.maxDepth = maxDepth;
+        this.domains = domains;
+        this.targetLanguage = targetLanguage;
+    }
+
     public static Configuration requestConfiguration () {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
