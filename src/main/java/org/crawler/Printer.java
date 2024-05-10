@@ -1,5 +1,6 @@
 package org.crawler;
 
+import org.crawler.Console.Console;
 import org.crawler.crawl.PageInfo;
 import org.jsoup.nodes.Element;
 
@@ -7,7 +8,10 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static org.crawler.Console.Color.Red;
 
 public class Printer {
     public static void printReport (List<String> lines) throws IOException {
@@ -20,7 +24,7 @@ public class Printer {
         writer.close();
     }
 
-    public static List<String> createReport (PageInfo page) throws IOException {
+    public static List<String> createReport (PageInfo page) {
         List<String> lines = new ArrayList<>();
 
         lines.add(String.format("input: <%s>", page.getUrl()));
@@ -31,6 +35,27 @@ public class Printer {
         lines.addAll(createSubPagesReport(page));
 
         return lines;
+    }
+
+    /**
+     * This method creates a report for multiple PageInfos.
+     * @param pageInfos A list of PageInfos for which a report shall be created.
+     */
+    public static void printReports (List<PageInfo> pageInfos) {
+        List<String> reportLines = new ArrayList<>();
+
+        for (PageInfo pageInfo : pageInfos) {
+            reportLines.addAll(createReport(pageInfo));
+
+            String[] spacings = new String[]{"", "", "", "", ""};
+            reportLines.addAll(Arrays.stream(spacings).toList());
+        }
+
+        try {
+            printReport(reportLines);
+        } catch (IOException e) {
+            Console.print(Red, "Creating single report for multiple PageInfos failed.");
+        }
     }
 
     private static List<String> formatPageHeadings (PageInfo page) {
@@ -47,7 +72,7 @@ public class Printer {
         return headings;
     }
 
-    private static List<String> createSubPagesReport (PageInfo page) throws IOException {
+    private static List<String> createSubPagesReport (PageInfo page) {
         List<String> lines = new ArrayList<>();
 
         for (PageInfo subPage : page.getSubPagesInfo()) {
@@ -64,7 +89,8 @@ public class Printer {
 
         return Integer.parseInt(heading.tagName().split("h")[1]);
     }
-    private static String createHeading(int level, String title) {
+
+    private static String createHeading (int level, String title) {
         StringBuilder builder = new StringBuilder();
         builder.append("#".repeat(level));
         builder.append(" ");
