@@ -15,7 +15,7 @@ public class Console {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 
         String name = stackTraceElements[traceOriginIndex].getClassName().split("\\.")[stackTraceElements[traceOriginIndex].getClassName().split("\\.").length - 1];
-        return format("[%s::l %s]", name, stackTraceElements[traceOriginIndex].getLineNumber());
+        return format("[%s]", name);
     }
 
     /**
