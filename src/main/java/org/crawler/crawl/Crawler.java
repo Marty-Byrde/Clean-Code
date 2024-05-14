@@ -48,7 +48,7 @@ public class Crawler {
 
     public Page recursiveCrawl (String url, int currentDepth) {
         if (currentDepth > this.config.getMaxDepth()) return null;
-        if (!isValidUrl(url)) return null; //? Skips internal anchor-tags like /favicon
+        if (!isExternalUrl(url)) return null; //? Skips internal anchor-tags like /favicon
 
         Page page = getPage(url, currentDepth);
 
@@ -64,7 +64,7 @@ public class Crawler {
         return page;
     }
 
-    private boolean isValidUrl (String url) {
+    private boolean isExternalUrl (String url) {
         return url.startsWith("http://") || url.startsWith("https://");
     }
 
