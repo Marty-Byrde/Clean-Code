@@ -35,7 +35,7 @@ public class Crawler {
 
             String language = JsoupAdapter.getLanguage(document);
             Elements headings = JsoupAdapter.getHeadings(document);
-            List<String> links = cleanLinks(url, JsoupAdapter.getLinks(document));
+            List<String> links = filterLinks(url, JsoupAdapter.getLinks(document));
 
             Page page = new Page(url, language, headings, links, currentDepth);
             Console.print("[id: " + Thread.currentThread().getId() + "]:", page.getPageLinks().size() + "", "Sublinks found in (depth", (currentDepth) + ")", url);
@@ -81,10 +81,16 @@ public class Crawler {
         return true;
     }
 
-    private List<String> cleanLinks (String origin, List<String> links) {
+    /**
+     * Filters the links by removing duplicates, removing link-loops and checking whether domain was requested / allowed.
+     * @param originUrl The origin link from which the links were extracted
+     * @param links The links that should be filtered
+     * @return The filtered and therefore cleaned links
+     */
+    private List<String> filterLinks (String originUrl, List<String> links) {
         links = removeDuplicateLinks(links);
         links = filterLinksByDomain(links);
-        links = removeLinkLoops(origin, links);
+        links = removeLinkLoops(originUrl, links);
         return links;
     }
 
