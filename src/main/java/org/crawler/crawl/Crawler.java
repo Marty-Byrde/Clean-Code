@@ -49,15 +49,15 @@ public class Crawler {
 
     public Page recursiveCrawl (String url, int currentDepth) {
         if (currentDepth > this.config.getMaxDepth()) return null;
+        if (!isValidUrl(url)) return null; //? Skips internal anchor-tags like /favicon
+
         Page page = getPage(url, currentDepth);
 
         ArrayList<Page> subPages = new ArrayList<>();
         for (String link : page.getPageLinks()) {
-            if (!isValidUrl(link)) continue;
-
             Page subPage = recursiveCrawl(link, currentDepth + 1);
 
-            //? Exit conditions reached
+            //? (Exceeded Depth or Url Validity)
             if (subPage == null) continue;
 
             subPages.add(subPage);
