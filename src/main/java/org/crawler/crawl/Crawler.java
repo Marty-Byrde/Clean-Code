@@ -44,7 +44,7 @@ public class Crawler {
         PageInfo result = new PageInfo(url, "", new Elements(), new ArrayList<>(), depth);
         Document document = null;
         try {
-            document = getDocument(url);
+            document = fetchDocument(url);
         } catch (IOException e) {
             Console.print(Red, "Document Retrieval for", url, "failed.");
 
@@ -75,7 +75,7 @@ public class Crawler {
     /**
      * @implNote Would be private if it wasn't for testing purposes.
      */
-    public Document getDocument (String url) throws IOException {
+    public Document fetchDocument (String url) throws IOException {
         Connection connection = Jsoup.connect(url);
         return connection.get();
     }

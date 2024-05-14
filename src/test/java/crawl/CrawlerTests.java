@@ -64,7 +64,7 @@ class CrawlerTests {
     @ParameterizedTest
     @ValueSource(strings = {"https://orf.at/", "https://www.derstandard.at/", "invalid.url.at"})
     public void test_getDocument (String url) throws IOException {
-        Document document = crawler.getDocument(url);
+        Document document = crawler.fetchDocument(url);
 
         if (url.startsWith("https://") || url.startsWith("http://")) Assertions.assertNotNull(document);
         else Assertions.assertNull(document);
