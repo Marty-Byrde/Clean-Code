@@ -61,10 +61,8 @@ public class Crawler {
     }
 
     private void recursion (PageInfo originPage, int currentDepth) {
-        List<String> links_to_crawl = originPage.getPageLinks();
-
         ArrayList<PageInfo> results = new ArrayList<>();
-        for (String link : links_to_crawl) {
+        for (String link : originPage.getPageLinks()) {
             PageInfo recursiveResult = getPage(link, currentDepth + 1);
             if (recursiveResult != null) results.add(recursiveResult);
 
