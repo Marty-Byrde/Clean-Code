@@ -1,13 +1,10 @@
 package org.crawler.crawl;
 
 import org.crawler.Console.Console;
+import org.crawler.adapters.JsoupAdapter;
 import org.crawler.config.Configuration;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.jsoup.select.NodeFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,71 +22,52 @@ public class Crawler {
 
     public Page crawl (String url) {
         Console.print("Crawler with id: " + Thread.currentThread().getId(), "is going to crawl", url, "\n");
-        return getPage(url, 0);
+        return recursiveCrawl(url, 0);
     }
 
-    private Page getPage (String url, int currentDepth) {
-        if (currentDepth > this.config.getMaxDepth()) return null;
-        Page page = retrievePageInfo(url, currentDepth);
-        Console.print("[id: " + Thread.currentThread().getId() + "]:", page.getPageLinks().size() + "", "Sublinks found in (depth", (currentDepth) + ")", url);
+    /**
+     * @implNote Would be private, but is public for testing-purposes
+     */
+    public Page getPage (String url, int currentDepth) {
+        try {
+            //* In here to detect and store the reason for retrieval-failures (failureReason)
+            Document document = JsoupAdapter.fetchDocument(url);
 
-        recursion(page, currentDepth);
+            String language = JsoupAdapter.getLanguage(document);
+            Elements headings = JsoupAdapter.getHeadings(document);
+            List<String> links = cleanLinks(url, JsoupAdapter.getLinks(document));
+
+            Page page = new Page(url, language, headings, links, currentDepth);
+            Console.print("[id: " + Thread.currentThread().getId() + "]:", page.getPageLinks().size() + "", "Sublinks found in (depth", (currentDepth) + ")", url);
+
+            return page;
+        } catch (IOException e) {
+            Console.print(Red, "Connection to", url, "failed.");
+            return new Page(url, e.toString(), currentDepth);
+        }
+    }
+
+    public Page recursiveCrawl (String url, int currentDepth) {
+        if (currentDepth > this.config.getMaxDepth()) return null;
+        Page page = getPage(url, currentDepth);
+
+        ArrayList<Page> subPages = new ArrayList<>();
+        for (String link : page.getPageLinks()) {
+            if (!isValidUrl(link)) continue;
+
+            Page subPage = recursiveCrawl(link, currentDepth + 1);
+
+            //? Exit conditions reached
+            if (subPage == null) continue;
+
+            subPages.add(subPage);
+        }
+        page.setSubPagesInfo(subPages);
         return page;
     }
 
-    /**
-     * @implNote Would be private if it wasn't for testing purposes.
-     */
-    public Page retrievePageInfo (String url, int depth) {
-        Page result = new Page(url, "", new Elements(), new ArrayList<>(), depth);
-        Document document = null;
-        try {
-            document = fetchDocument(url);
-        } catch (IOException e) {
-            Console.print(Red, "Document Retrieval for", url, "failed.");
-
-            //* In case one cannot connect to the requested URL
-            result.setFailureReason(e.toString());
-            return result;
-        }
-
-        result.setLanguage(getSourceLanguage(document));
-        result.setHeadings(document.select("h1, h2, h3, h4, h5, h6"));
-        result.setPageLinks(removeLinkLoops(url, getFilteredPageLinks(document, this.config.getDomains())));
-
-        return result;
-    }
-
-    private void recursion (Page originPage, int currentDepth) {
-        ArrayList<Page> results = new ArrayList<>();
-        for (String link : originPage.getPageLinks()) {
-            Page recursiveResult = getPage(link, currentDepth + 1);
-            if (recursiveResult != null) results.add(recursiveResult);
-
-            if (results.size() == 10) break;
-        }
-
-        originPage.setSubPagesInfo(results);
-    }
-
-    /**
-     * @implNote Would be private if it wasn't for testing purposes.
-     */
-    public Document fetchDocument (String url) throws IOException {
-        Connection connection = Jsoup.connect(url);
-        return connection.get();
-    }
-
-
-    private ArrayList<String> getFilteredPageLinks (Document document, String[] allowedDomains) {
-        Elements anchors = document.select("a[href]");
-        removeWrongDomainLinks(anchors, allowedDomains);
-        return removeDuplicateLinks(anchors);
-    }
-
-    private String getSourceLanguage (Document document) {
-        String sourceLanguageISO = document.getElementsByTag("html").attr("lang");
-        return sourceLanguageISO.split("-")[0];
+    private boolean isValidUrl (String url) {
+        return url.startsWith("http://") || url.startsWith("https://");
     }
 
     /**
@@ -103,30 +81,19 @@ public class Crawler {
         return true;
     }
 
-
-    private ArrayList<String> removeDuplicateLinks (Elements anchors) {
-        ArrayList<String> links = new ArrayList<>();
-        for (Element anchor : anchors) {
-            String href = anchor.attr("abs:href");
-            if (!links.contains(href)) links.add(href);
-        }
-
+    private List<String> cleanLinks (String origin, List<String> links) {
+        links = removeDuplicateLinks(links);
+        links = filterLinksByDomain(links);
+        links = removeLinkLoops(origin, links);
         return links;
     }
 
-    private void removeWrongDomainLinks (Elements anchors, String[] allowedDomains) {
-        anchors.filter((anchor, index) -> {
-            String href = anchor.attr("abs:href");
+    private List<String> removeDuplicateLinks (List<String> links) {
+        return links.stream().distinct().toList();
+    }
 
-            if (href.isEmpty()) return NodeFilter.FilterResult.SKIP_ENTIRELY;
-
-            // Skipping non-relevant links.
-            if (!isRequestedDomain(href, allowedDomains)) {
-                return NodeFilter.FilterResult.SKIP_ENTIRELY;
-            }
-
-            return NodeFilter.FilterResult.CONTINUE;
-        });
+    private List<String> filterLinksByDomain (List<String> links) {
+        return links.stream().filter(link -> isRequestedDomain(link, this.config.getDomains())).toList();
     }
 
     private List<String> removeLinkLoops (String origin, List<String> links) {
