@@ -25,29 +25,29 @@ public class Crawler {
 
     public PageInfo crawl (String url) {
         Console.print("Crawler with id: " + Thread.currentThread().getId(), "is going to crawl", url, "\n");
-        return getPage(url, 0, config.getMaxDepth(), config.getDomains());
+        return getPage(url, 0);
     }
 
-    private PageInfo getPage (String url, int currentDepth, int maxDepth, String[] allowedDomains) {
-        if (currentDepth > maxDepth) return null;
-        PageInfo page = retrievePageInfo(url, allowedDomains, currentDepth);
+    private PageInfo getPage (String url, int currentDepth) {
+        if (currentDepth > this.config.getMaxDepth()) return null;
+        PageInfo page = retrievePageInfo(url, currentDepth);
         Console.print("[id: " + Thread.currentThread().getId() + "]:", page.getPageLinks().size() + "", "Sublinks found in (depth", (currentDepth) + ")", url);
 
-        recursion(page, currentDepth, maxDepth, allowedDomains);
+        recursion(page, currentDepth);
         return page;
     }
 
     /**
      * @implNote Would be private if it wasn't for testing purposes.
      */
-    public PageInfo retrievePageInfo (String url, String[] domains, int depth) {
+    public PageInfo retrievePageInfo (String url, int depth) {
         PageInfo result = new PageInfo(url, "", new Elements(), new ArrayList<>(), depth);
         Document document = null;
         try {
             document = getDocument(url);
         } catch (IOException e) {
             Console.print(Red, "Document Retrieval for", url, "failed.");
-            
+
             //* In case one cannot connect to the requested URL
             result.setFailureReason(e.toString());
             return result;
@@ -55,17 +55,17 @@ public class Crawler {
 
         result.setLanguage(getSourceLanguage(document));
         result.setHeadings(document.select("h1, h2, h3, h4, h5, h6"));
-        result.setPageLinks(removeLinkLoops(url, getFilteredPageLinks(document, domains)));
+        result.setPageLinks(removeLinkLoops(url, getFilteredPageLinks(document, this.config.getDomains())));
 
         return result;
     }
 
-    private void recursion (PageInfo originPage, int currentDepth, int maxDepth, String[] allowedDomains) {
+    private void recursion (PageInfo originPage, int currentDepth) {
         List<String> links_to_crawl = originPage.getPageLinks();
 
         ArrayList<PageInfo> results = new ArrayList<>();
         for (String link : links_to_crawl) {
-            PageInfo recursiveResult = getPage(link, currentDepth + 1, maxDepth, allowedDomains);
+            PageInfo recursiveResult = getPage(link, currentDepth + 1);
             if (recursiveResult != null) results.add(recursiveResult);
 
             if (results.size() == 10) break;
