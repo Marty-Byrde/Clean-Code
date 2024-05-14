@@ -8,9 +8,9 @@ import java.util.List;
 
 public class Page {
     private String url;
-    private String language;
-    private Elements headings;
-    private List<String> pageLinks;
+    private String language = "";
+    private Elements headings = new Elements();
+    private List<String> pageLinks = new ArrayList<>();
     private ArrayList<Page> subPagesInfo = new ArrayList<>();
     private int depth;
     private String failureReson;
@@ -20,6 +20,12 @@ public class Page {
         this.language = language;
         this.headings = headings;
         this.pageLinks = pageLinks;
+        this.depth = depth;
+    }
+
+    public Page (String url, String failureReson, int depth) {
+        this.url = url;
+        this.failureReson = failureReson;
         this.depth = depth;
     }
 
