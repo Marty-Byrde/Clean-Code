@@ -65,6 +65,10 @@ public class Page {
         return subPagesInfo;
     }
 
+    public void addSubPage (Page page) {
+        this.subPagesInfo.add(page);
+    }
+
     public void setSubPagesInfo (ArrayList<Page> subPagesInfo) {
         this.subPagesInfo = subPagesInfo;
     }

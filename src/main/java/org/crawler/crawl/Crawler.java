@@ -7,7 +7,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.crawler.Console.Color.Red;
@@ -53,16 +52,15 @@ public class Crawler {
 
         Page page = getPage(url, currentDepth);
 
-        ArrayList<Page> subPages = new ArrayList<>();
         for (String link : page.getPageLinks()) {
             Page subPage = recursiveCrawl(link, currentDepth + 1);
 
             //? (Exceeded Depth or Url Validity)
             if (subPage == null) continue;
 
-            subPages.add(subPage);
+            page.addSubPage(subPage);
         }
-        page.setSubPagesInfo(subPages);
+
         return page;
     }
 
