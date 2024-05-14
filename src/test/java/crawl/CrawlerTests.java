@@ -1,5 +1,6 @@
 package crawl;
 
+import org.crawler.adapters.JsoupAdapter;
 import org.crawler.config.Configuration;
 import org.crawler.crawl.Crawler;
 import org.crawler.crawl.Page;
@@ -64,7 +65,7 @@ class CrawlerTests {
     @ParameterizedTest
     @ValueSource(strings = {"https://orf.at/", "https://www.derstandard.at/", "invalid.url.at"})
     public void test_getDocument (String url) throws IOException {
-        Document document = crawler.fetchDocument(url);
+        Document document = JsoupAdapter.fetchDocument(url);
 
         if (url.startsWith("https://") || url.startsWith("http://")) Assertions.assertNotNull(document);
         else Assertions.assertNull(document);
@@ -72,7 +73,7 @@ class CrawlerTests {
 
     @Test
     public void test_invalid_retrievePageInfo () {
-        Page info = crawler.retrievePageInfo("invalid.url.at", 0);
+        Page info = crawler.getPage("invalid.url.at", 0);
 
         Assertions.assertEquals(brokenPageInfo.getSubPagesInfo(), info.getSubPagesInfo());
         Assertions.assertEquals(brokenPageInfo.getUrl(), info.getUrl());
@@ -84,7 +85,7 @@ class CrawlerTests {
     @ParameterizedTest
     @ValueSource(strings = {"https://orf.at/", "https://www.derstandard.at/"})
     public void test_retrievePageInfo (String url) {
-        Page info = crawler.retrievePageInfo(url, 0);
+        Page info = crawler.getPage(url, 0);
 
         Assertions.assertEquals(url, info.getUrl());
         Assertions.assertNotEquals("", info.getLanguage());

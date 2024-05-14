@@ -4,7 +4,7 @@ import org.crawler.Console.Color;
 import org.crawler.Console.Console;
 import org.crawler.config.Configuration;
 import org.crawler.crawl.ConcurrencyHandler;
-import org.crawler.crawl.PageInfo;
+import org.crawler.crawl.Page;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class Main {
         Configuration config = Configuration.requestConfiguration();
 
         ConcurrencyHandler handler = new ConcurrencyHandler(config);
-        List<PageInfo> thread_results = handler.getResults();
+        List<Page> thread_results = handler.getResults();
 
         System.out.println();
         Console.print(Color.Green, "All Crawlers have finished, for these urls:");
