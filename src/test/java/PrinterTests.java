@@ -1,5 +1,5 @@
 import org.crawler.Printer;
-import org.crawler.crawl.PageInfo;
+import org.crawler.crawl.Page;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,8 +17,8 @@ import static org.mockito.Mockito.when;
 
 public class PrinterTests {
     Element mockedElement = Mockito.mock(Element.class);
-    PageInfo mockedValidPageInfo = Mockito.mock(PageInfo.class);
-    PageInfo mockedInvalidPageInfo = Mockito.mock(PageInfo.class);
+    Page mockedValidPageInfo = Mockito.mock(Page.class);
+    Page mockedInvalidPageInfo = Mockito.mock(Page.class);
     ArrayList<String> pageLinks = new ArrayList<>(Arrays.asList("http://link1.at", "http://link2.at"));
 
 

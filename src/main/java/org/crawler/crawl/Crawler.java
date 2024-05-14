@@ -23,14 +23,14 @@ public class Crawler {
         this.config = config;
     }
 
-    public PageInfo crawl (String url) {
+    public Page crawl (String url) {
         Console.print("Crawler with id: " + Thread.currentThread().getId(), "is going to crawl", url, "\n");
         return getPage(url, 0);
     }
 
-    private PageInfo getPage (String url, int currentDepth) {
+    private Page getPage (String url, int currentDepth) {
         if (currentDepth > this.config.getMaxDepth()) return null;
-        PageInfo page = retrievePageInfo(url, currentDepth);
+        Page page = retrievePageInfo(url, currentDepth);
         Console.print("[id: " + Thread.currentThread().getId() + "]:", page.getPageLinks().size() + "", "Sublinks found in (depth", (currentDepth) + ")", url);
 
         recursion(page, currentDepth);
@@ -40,8 +40,8 @@ public class Crawler {
     /**
      * @implNote Would be private if it wasn't for testing purposes.
      */
-    public PageInfo retrievePageInfo (String url, int depth) {
-        PageInfo result = new PageInfo(url, "", new Elements(), new ArrayList<>(), depth);
+    public Page retrievePageInfo (String url, int depth) {
+        Page result = new Page(url, "", new Elements(), new ArrayList<>(), depth);
         Document document = null;
         try {
             document = fetchDocument(url);
@@ -60,10 +60,10 @@ public class Crawler {
         return result;
     }
 
-    private void recursion (PageInfo originPage, int currentDepth) {
-        ArrayList<PageInfo> results = new ArrayList<>();
+    private void recursion (Page originPage, int currentDepth) {
+        ArrayList<Page> results = new ArrayList<>();
         for (String link : originPage.getPageLinks()) {
-            PageInfo recursiveResult = getPage(link, currentDepth + 1);
+            Page recursiveResult = getPage(link, currentDepth + 1);
             if (recursiveResult != null) results.add(recursiveResult);
 
             if (results.size() == 10) break;

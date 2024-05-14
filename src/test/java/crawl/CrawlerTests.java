@@ -2,7 +2,7 @@ package crawl;
 
 import org.crawler.config.Configuration;
 import org.crawler.crawl.Crawler;
-import org.crawler.crawl.PageInfo;
+import org.crawler.crawl.Page;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -22,9 +22,9 @@ class CrawlerTests {
 
     Crawler crawler;
     Configuration config = new Configuration("https://orf.at/", 3, new String[]{}, "german");
-    PageInfo brokenPageInfo = new PageInfo("invalid.url.at", "", new Elements(), new ArrayList<>(), 0);
+    Page brokenPageInfo = new Page("invalid.url.at", "", new Elements(), new ArrayList<>(), 0);
 
-    PageInfo mockedPageInfo = mock(PageInfo.class);
+    Page mockedPageInfo = mock(Page.class);
 
     Document mockedDocument = mock(Document.class);
     Element mockedHeading = mock(Element.class);
@@ -72,7 +72,7 @@ class CrawlerTests {
 
     @Test
     public void test_invalid_retrievePageInfo () {
-        PageInfo info = crawler.retrievePageInfo("invalid.url.at", new String[]{}, 0);
+        Page info = crawler.retrievePageInfo("invalid.url.at", new String[]{}, 0);
 
         Assertions.assertEquals(brokenPageInfo.getSubPagesInfo(), info.getSubPagesInfo());
         Assertions.assertEquals(brokenPageInfo.getUrl(), info.getUrl());
@@ -84,7 +84,7 @@ class CrawlerTests {
     @ParameterizedTest
     @ValueSource(strings = {"https://orf.at/", "https://www.derstandard.at/"})
     public void test_retrievePageInfo (String url) {
-        PageInfo info = crawler.retrievePageInfo(url, new String[]{}, 0);
+        Page info = crawler.retrievePageInfo(url, new String[]{}, 0);
 
         Assertions.assertEquals(url, info.getUrl());
         Assertions.assertNotEquals("", info.getLanguage());

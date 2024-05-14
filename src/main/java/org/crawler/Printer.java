@@ -1,7 +1,7 @@
 package org.crawler;
 
 import org.crawler.Console.Console;
-import org.crawler.crawl.PageInfo;
+import org.crawler.crawl.Page;
 import org.jsoup.nodes.Element;
 
 import java.io.BufferedWriter;
@@ -24,7 +24,7 @@ public class Printer {
         writer.close();
     }
 
-    public static List<String> createReport (PageInfo page) {
+    public static List<String> createReport (Page page) {
         List<String> lines = new ArrayList<>();
 
         lines.add(String.format("input: <%s>", page.getUrl()));
@@ -45,10 +45,10 @@ public class Printer {
      * This method creates a report for multiple PageInfos.
      * @param pageInfos A list of PageInfos for which a report shall be created.
      */
-    public static void printReports (List<PageInfo> pageInfos) {
+    public static void printReports (List<Page> pageInfos) {
         List<String> reportLines = new ArrayList<>();
 
-        for (PageInfo pageInfo : pageInfos) {
+        for (Page pageInfo : pageInfos) {
             reportLines.addAll(createReport(pageInfo));
 
             String[] spacings = new String[]{"", "", "", "", ""};
@@ -62,7 +62,7 @@ public class Printer {
         }
     }
 
-    private static List<String> formatPageHeadings (PageInfo page) {
+    private static List<String> formatPageHeadings (Page page) {
         List<String> headings = new ArrayList<>();
 
         for (Element heading : page.getHeadings()) {
@@ -76,10 +76,10 @@ public class Printer {
         return headings;
     }
 
-    private static List<String> createSubPagesReport (PageInfo page) {
+    private static List<String> createSubPagesReport (Page page) {
         List<String> lines = new ArrayList<>();
 
-        for (PageInfo subPage : page.getSubPagesInfo()) {
+        for (Page subPage : page.getSubPagesInfo()) {
             lines.add("");
             lines.add("");
             lines.addAll(createReport(subPage));

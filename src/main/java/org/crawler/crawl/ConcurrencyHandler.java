@@ -14,9 +14,9 @@ import static org.crawler.Console.Color.Yellow;
 public class ConcurrencyHandler {
     private Configuration config;
     private ExecutorService executorService;
-    private Collection<Callable<PageInfo>> callables = new ArrayList<>();
+    private Collection<Callable<Page>> callables = new ArrayList<>();
 
-    private List<Future<PageInfo>> threads = new ArrayList<>();
+    private List<Future<Page>> threads = new ArrayList<>();
 
     public ConcurrencyHandler (Configuration config) {
         this.config = config;
@@ -44,12 +44,12 @@ public class ConcurrencyHandler {
      * This method waits internally for all threads to finish and returns the results.
      * @return A list of PageInfo's that holds the results of each Crawler
      */
-    public List<PageInfo> getResults () {
+    public List<Page> getResults () {
         if (threads.isEmpty()) start();
 
-        List<PageInfo> results = new ArrayList<>();
+        List<Page> results = new ArrayList<>();
 
-        for (Future<PageInfo> future : threads) {
+        for (Future<Page> future : threads) {
             try {
                 results.add(future.get());
             } catch (ExecutionException | InterruptedException e) {
@@ -76,7 +76,7 @@ public class ConcurrencyHandler {
     private void createThreads () {
         for (int i = 0; i < config.getUrls().length; i++) {
             int finalI = i;
-            Callable<PageInfo> callable = () -> {
+            Callable<Page> callable = () -> {
                 Crawler c1 = new Crawler(config);
                 return c1.crawl(config.getUrls()[finalI]);
             };
