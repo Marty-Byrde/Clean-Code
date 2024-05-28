@@ -6,20 +6,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class PageInfo {
+public class Page {
     private String url;
-    private String language;
-    private Elements headings;
-    private List<String> pageLinks;
-    private ArrayList<PageInfo> subPagesInfo = new ArrayList<>();
+    private String language = "";
+    private Elements headings = new Elements();
+    private List<String> pageLinks = new ArrayList<>();
+    private ArrayList<Page> subPagesInfo = new ArrayList<>();
     private int depth;
     private String failureReson;
 
-    public PageInfo (String url, String language, Elements headings, List<String> pageLinks, int depth) {
+    public Page (String url, String language, Elements headings, List<String> pageLinks, int depth) {
         this.url = url;
         this.language = language;
         this.headings = headings;
         this.pageLinks = pageLinks;
+        this.depth = depth;
+    }
+
+    public Page (String url, String failureReson, int depth) {
+        this.url = url;
+        this.failureReson = failureReson;
         this.depth = depth;
     }
 
@@ -55,11 +61,15 @@ public class PageInfo {
         this.headings = headings;
     }
 
-    public ArrayList<PageInfo> getSubPagesInfo () {
+    public ArrayList<Page> getSubPagesInfo () {
         return subPagesInfo;
     }
 
-    public void setSubPagesInfo (ArrayList<PageInfo> subPagesInfo) {
+    public void addSubPage (Page page) {
+        this.subPagesInfo.add(page);
+    }
+
+    public void setSubPagesInfo (ArrayList<Page> subPagesInfo) {
         this.subPagesInfo = subPagesInfo;
     }
 

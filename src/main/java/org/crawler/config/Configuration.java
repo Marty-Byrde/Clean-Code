@@ -1,15 +1,15 @@
 package org.crawler.config;
 
-import org.crawler.Console.Colorizer;
+import org.crawler.console.Colorizer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import static org.crawler.Console.Color.Cyan;
-import static org.crawler.Console.Color.Green;
-import static org.crawler.Console.ColorType.bold;
 import static org.crawler.config.InputValidation.validate;
+import static org.crawler.console.Color.Cyan;
+import static org.crawler.console.Color.Green;
+import static org.crawler.console.ColorType.bold;
 
 public class Configuration {
 
