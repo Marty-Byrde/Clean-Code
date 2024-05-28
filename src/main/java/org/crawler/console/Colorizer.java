@@ -1,4 +1,4 @@
-package org.crawler.Console;
+package org.crawler.console;
 
 import java.util.HashMap;
 import java.util.Map;

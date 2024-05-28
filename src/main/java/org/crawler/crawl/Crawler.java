@@ -1,15 +1,15 @@
 package org.crawler.crawl;
 
-import org.crawler.Console.Console;
 import org.crawler.adapters.JsoupAdapter;
 import org.crawler.config.Configuration;
+import org.crawler.console.Console;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.List;
 
-import static org.crawler.Console.Color.Red;
+import static org.crawler.console.Color.Red;
 
 
 public class Crawler {

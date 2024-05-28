@@ -1,6 +1,6 @@
 package org.crawler;
 
-import org.crawler.Console.Console;
+import org.crawler.console.Console;
 import org.crawler.crawl.Page;
 import org.jsoup.nodes.Element;
 
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.crawler.Console.Color.Red;
+import static org.crawler.console.Color.Red;
 
 public class Printer {
     public static void printReport (List<String> lines) throws IOException {

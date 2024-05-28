@@ -1,15 +1,15 @@
 package org.crawler.crawl;
 
-import org.crawler.Console.Console;
 import org.crawler.config.Configuration;
+import org.crawler.console.Console;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.*;
 
-import static org.crawler.Console.Color.Red;
-import static org.crawler.Console.Color.Yellow;
+import static org.crawler.console.Color.Red;
+import static org.crawler.console.Color.Yellow;
 
 public class ConcurrencyHandler {
     private Configuration config;

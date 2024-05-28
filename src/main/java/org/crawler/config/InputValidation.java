@@ -1,7 +1,7 @@
 package org.crawler.config;
 
-import org.crawler.Console.Color;
-import org.crawler.Console.Colorizer;
+import org.crawler.console.Color;
+import org.crawler.console.Colorizer;
 
 @SuppressWarnings("unchecked")
 public class InputValidation {

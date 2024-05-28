@@ -1,4 +1,4 @@
-package org.crawler.Console;
+package org.crawler.console;
 
 /**
  * Enum to define the variant for a given color.

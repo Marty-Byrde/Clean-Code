@@ -1,9 +1,9 @@
-package org.crawler.Console;
+package org.crawler.console;
 
 import static java.lang.String.format;
-import static org.crawler.Console.Color.Yellow;
-import static org.crawler.Console.ColorType.bright;
-import static org.crawler.Console.Colorizer.colorize;
+import static org.crawler.console.Color.Yellow;
+import static org.crawler.console.ColorType.bright;
+import static org.crawler.console.Colorizer.colorize;
 
 public class Console {
     public static boolean colorizeLogs = true;

@@ -1,4 +1,4 @@
-package org.crawler.Console;
+package org.crawler.console;
 
 /**
  * Enum class that offers a variety of colors for the console output.

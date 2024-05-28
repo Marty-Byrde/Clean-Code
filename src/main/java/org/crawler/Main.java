@@ -1,8 +1,8 @@
 package org.crawler;
 
-import org.crawler.Console.Color;
-import org.crawler.Console.Console;
 import org.crawler.config.Configuration;
+import org.crawler.console.Color;
+import org.crawler.console.Console;
 import org.crawler.crawl.ConcurrencyHandler;
 import org.crawler.crawl.Page;
 
