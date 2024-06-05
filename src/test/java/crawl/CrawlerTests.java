@@ -75,11 +75,14 @@ class CrawlerTests {
         }
     }
 
-    @Test
-    public void testIsExternalUrl() {
-        assertTrue(crawler.isExternalUrl("http://example.com"));
-        assertTrue(crawler.isExternalUrl("https://example.com"));
-        assertFalse(crawler.isExternalUrl("/internal/link"));
+    @ParameterizedTest
+    @CsvSource({
+            "true, http://example.com",
+            "true, https://example.com",
+            "false, /internal/link"
+    })
+    public void testIsExternalUrl(boolean isExternal, String url) {
+        assertEquals(isExternal, crawler.isExternalUrl(url));
     }
 
     @Test
