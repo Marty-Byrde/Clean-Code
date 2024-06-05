@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -102,44 +103,34 @@ class CrawlerTests {
             "http://example3.com, http://example3.com/section1, http://example3.com/section2"
     })
     public void testRecursiveCrawl(String mainUrl, String subUrl1, String subUrl2) {
-        Document mockMainDocument = mock(Document.class);
-        Document mockSubDocument1 = mock(Document.class);
-        Document mockSubDocument2 = mock(Document.class);
+        List<String> urls = Arrays.asList(mainUrl, subUrl1, subUrl2);
+        List<Document> mockedDocuments = Arrays.asList(mock(Document.class), mock(Document.class), mock(Document.class));
+        List<Elements> mockedHeadings = Arrays.asList(mock(Elements.class), mock(Elements.class), mock(Elements.class));
+        List<List<String>> mockedLinks = Arrays.asList(
+                Collections.singletonList(subUrl1),
+                Collections.singletonList(subUrl2),
+                Collections.emptyList()
+        );
 
-        Elements mockMainHeadings = mock(Elements.class);
-        Elements mockSubHeadings1 = mock(Elements.class);
-        Elements mockSubHeadings2 = mock(Elements.class);
-
-        List<String> mockMainLinks = Collections.singletonList(subUrl1);
-        List<String> mockSubLinks1 = Collections.singletonList(subUrl2);
-        List<String> mockSubLinks2 = Collections.emptyList();
-
-        Page mockMainPage = new Page(mainUrl, "en", mockMainHeadings, mockMainLinks, 0);
-        Page mockSubPage1 = new Page(subUrl1, "en", mockSubHeadings1, mockSubLinks1, 1);
-        Page mockSubPage2 = new Page(subUrl2, "en", mockSubHeadings2, mockSubLinks2, 2);
+        List<Page> mockedPages = Arrays.asList(
+                new Page(mainUrl, "en", mockedHeadings.get(0), mockedLinks.get(0), 0),
+                new Page(subUrl1, "en", mockedHeadings.get(1), mockedLinks.get(1), 1),
+                new Page(subUrl2, "en", mockedHeadings.get(2), mockedLinks.get(2), 2)
+        );
 
         try (MockedStatic<JsoupAdapter> jsoupAdapterMock = mockStatic(JsoupAdapter.class)) {
-            jsoupAdapterMock.when(() -> JsoupAdapter.fetchDocument(mainUrl)).thenReturn(mockMainDocument);
-            jsoupAdapterMock.when(() -> JsoupAdapter.fetchDocument(subUrl1)).thenReturn(mockSubDocument1);
-            jsoupAdapterMock.when(() -> JsoupAdapter.fetchDocument(subUrl2)).thenReturn(mockSubDocument2);
-
-            jsoupAdapterMock.when(() -> JsoupAdapter.getLanguage(mockMainDocument)).thenReturn("en");
-            jsoupAdapterMock.when(() -> JsoupAdapter.getLanguage(mockSubDocument1)).thenReturn("en");
-            jsoupAdapterMock.when(() -> JsoupAdapter.getLanguage(mockSubDocument2)).thenReturn("en");
-
-            jsoupAdapterMock.when(() -> JsoupAdapter.getHeadings(mockMainDocument)).thenReturn(mockMainHeadings);
-            jsoupAdapterMock.when(() -> JsoupAdapter.getHeadings(mockSubDocument1)).thenReturn(mockSubHeadings1);
-            jsoupAdapterMock.when(() -> JsoupAdapter.getHeadings(mockSubDocument2)).thenReturn(mockSubHeadings2);
-
-            jsoupAdapterMock.when(() -> JsoupAdapter.getLinks(mockMainDocument)).thenReturn(mockMainLinks);
-            jsoupAdapterMock.when(() -> JsoupAdapter.getLinks(mockSubDocument1)).thenReturn(mockSubLinks1);
-            jsoupAdapterMock.when(() -> JsoupAdapter.getLinks(mockSubDocument2)).thenReturn(mockSubLinks2);
+            IntStream.range(0, urls.size()).forEach(i -> {
+                jsoupAdapterMock.when(() -> JsoupAdapter.fetchDocument(urls.get(i))).thenReturn(mockedDocuments.get(i));
+                jsoupAdapterMock.when(() -> JsoupAdapter.getLanguage(mockedDocuments.get(i))).thenReturn("en");
+                jsoupAdapterMock.when(() -> JsoupAdapter.getHeadings(mockedDocuments.get(i))).thenReturn(mockedHeadings.get(i));
+                jsoupAdapterMock.when(() -> JsoupAdapter.getLinks(mockedDocuments.get(i))).thenReturn(mockedLinks.get(i));
+            });
 
             Crawler spyCrawler = spy(crawler);
 
-            doReturn(mockMainPage).when(spyCrawler).getPage(mainUrl, 0);
-            doReturn(mockSubPage1).when(spyCrawler).getPage(subUrl1, 1);
-            doReturn(mockSubPage2).when(spyCrawler).getPage(subUrl2, 2);
+            for (int i = 0; i < urls.size(); i++) {
+                doReturn(mockedPages.get(i)).when(spyCrawler).getPage(urls.get(i), mockedPages.get(i).getDepth());
+            }
 
             Page result = spyCrawler.recursiveCrawl(mainUrl, 0);
 
@@ -154,9 +145,9 @@ class CrawlerTests {
             assertEquals(subUrl2, subPage2.getUrl());
             assertTrue(subPage2.getSubPagesInfo().isEmpty());
 
-            verify(spyCrawler, times(1)).getPage(mainUrl, 0);
-            verify(spyCrawler, times(1)).getPage(subUrl1, 1);
-            verify(spyCrawler, times(1)).getPage(subUrl2, 2);
+            for (int i = 0; i < urls.size(); i++) {
+                verify(spyCrawler, times(1)).getPage(urls.get(i), mockedPages.get(i).getDepth());
+            }
         }
     }
 }
