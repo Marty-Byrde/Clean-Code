@@ -5,92 +5,73 @@ import org.crawler.config.Configuration;
 import org.crawler.crawl.Crawler;
 import org.crawler.crawl.Page;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.MockedStatic;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 
 class CrawlerTests {
 
-    Crawler crawler;
-    Configuration config = new Configuration("https://orf.at/", 3, new String[]{}, "german");
-    Page brokenPageInfo = new Page("invalid.url.at", "", new Elements(), new ArrayList<>(), 0);
-
-    Page mockedPageInfo = mock(Page.class);
-
-    Document mockedDocument = mock(Document.class);
-    Element mockedHeading = mock(Element.class);
-    Element mockedAnchor = mock(Element.class);
-
+    private Crawler crawler;
+    private Configuration mockConfig;
 
     @BeforeEach
-    public void setup () {
-        crawler = new Crawler(config);
+    public void setUp() {
+        mockConfig = mock(Configuration.class);
+        when(mockConfig.getMaxDepth()).thenReturn(3);
+        when(mockConfig.getDomains()).thenReturn(new String[]{});
 
-
-        Element[] mockedPageHeadings = new Element[]{mockedHeading, mockedHeading, mockedHeading};
-        Elements el = new Elements();
-
-        //* Attempt to mock the PageInfo object and the related elements, however this information cannot be used since,
-        //* the basic methods that take in these arguments are private, and the bigger functions fetch the information directly using the Jsoup.connect.get functionality.
-
-        when(mockedPageInfo.getHeadings()).thenReturn(el);
-        when(mockedPageInfo.getUrl()).thenReturn("https://orf.at");
-        when(mockedPageInfo.getLanguage()).thenReturn("de");
-
-        when(mockedPageInfo.getPageLinks()).thenReturn(new ArrayList<>());
-        when(mockedPageInfo.getDepth()).thenReturn(0);
-        when(mockedHeading.tagName()).thenReturn("h2");
-
-        when(mockedHeading.text()).thenReturn("Sample Heading");
-
-
-
-        when(mockedAnchor.attr("href")).thenReturn("http://sample.link.at");
-
-        when(mockedDocument.title()).thenReturn("Sample Title");
-        when(mockedDocument.select("h1, h2, h3, h4, h5, h6")).thenReturn(new Elements());
-        when(mockedDocument.select("a")).thenReturn(new Elements());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"https://orf.at/", "https://www.derstandard.at/", "invalid.url.at"})
-    public void test_getDocument (String url) throws IOException {
-        Document document = JsoupAdapter.fetchDocument(url);
-
-        if (url.startsWith("https://") || url.startsWith("http://")) Assertions.assertNotNull(document);
-        else Assertions.assertNull(document);
+        crawler = new Crawler(mockConfig);
     }
 
     @Test
-    public void test_invalid_retrievePageInfo () {
-        Page info = crawler.getPage("invalid.url.at", 0);
+    public void testGetPage_Success() {
+        String url = "http://example.com";
+        Document mockDocument = mock(Document.class);
+        Elements mockHeadings = mock(Elements.class);
+        List<String> mockLinks = Arrays.asList("http://example.com/page1", "http://example.com/page2");
 
-        Assertions.assertEquals(brokenPageInfo.getSubPagesInfo(), info.getSubPagesInfo());
-        Assertions.assertEquals(brokenPageInfo.getUrl(), info.getUrl());
-        Assertions.assertEquals(brokenPageInfo.getLanguage(), info.getLanguage());
-        Assertions.assertEquals(brokenPageInfo.getHeadings(), info.getHeadings());
-        Assertions.assertEquals(brokenPageInfo.getPageLinks(), info.getPageLinks());
+        try (MockedStatic<JsoupAdapter> jsoupAdapterMock = mockStatic(JsoupAdapter.class)) {
+            jsoupAdapterMock.when(() -> JsoupAdapter.fetchDocument(url)).thenReturn(mockDocument);
+            jsoupAdapterMock.when(() -> JsoupAdapter.getLanguage(mockDocument)).thenReturn("en");
+            jsoupAdapterMock.when(() -> JsoupAdapter.getHeadings(mockDocument)).thenReturn(mockHeadings);
+            jsoupAdapterMock.when(() -> JsoupAdapter.getLinks(mockDocument)).thenReturn(mockLinks);
+
+            Page page = crawler.getPage(url, 0);
+
+            assertNotNull(page);
+            assertEquals(url, page.getUrl());
+            assertEquals("en", page.getLanguage());
+            assertEquals(mockHeadings, page.getHeadings());
+            assertEquals(mockLinks, page.getPageLinks());
+        }
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"https://orf.at/", "https://www.derstandard.at/"})
-    public void test_retrievePageInfo (String url) {
-        Page info = crawler.getPage(url, 0);
+    @Test
+    public void testGetPage_Failure() {
+        String url = "http://example.com";
+        IOException mockException = new IOException();
 
-        Assertions.assertEquals(url, info.getUrl());
-        Assertions.assertNotEquals("", info.getLanguage());
-        Assertions.assertNotEquals(0, info.getHeadings().size());
-        Assertions.assertNotEquals(0, info.getPageLinks().size());
+        try (MockedStatic<JsoupAdapter> jsoupAdapterMock = mockStatic(JsoupAdapter.class)) {
+            jsoupAdapterMock.when(() -> JsoupAdapter.fetchDocument(url)).thenThrow(mockException);
+
+            Page page = crawler.getPage(url, 0);
+
+            assertNotNull(page);
+            assertEquals(url, page.getUrl());
+            assertEquals(0, page.getHeadings().size());
+            assertEquals(0, page.getPageLinks().size());
+        }
     }
-
 }
