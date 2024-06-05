@@ -61,6 +61,15 @@ public class JsoupAdapterTests {
         assertEquals("en", language);
     }
 
+    @Test
+    void testGetHeadings() {
+        when(mockDocument.select("h1, h2, h3, h4, h5, h6")).thenReturn(mockElements);
+        Elements headings = JsoupAdapter.getHeadings(mockDocument);
+
+        assertNotNull(headings);
+        verify(mockDocument).select("h1, h2, h3, h4, h5, h6");
+    }
+
 
 
 }
