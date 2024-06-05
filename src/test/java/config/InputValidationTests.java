@@ -2,28 +2,40 @@ package config;
 
 import org.crawler.config.InputValidation;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullSource;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InputValidationTests {
 
     @ParameterizedTest
-    @MethodSource("provideStringsForValidation")
+    @CsvSource({
+            "'', 10, 10",
+            "'20', 10, 20",
+            "'', 'default', 'default'",
+            "'input', 'default', 'input'",
+    })
     void testValidate(String input, Object defaultValue, Object expected) {
         Object result = InputValidation.validate(input, defaultValue);
         assertEquals(expected, result);
     }
 
-    private static Stream<Arguments> provideStringsForValidation() {
-        return Stream.of(
-                Arguments.of("", 10, 10),
-                Arguments.of("20", 10, 20),
-                Arguments.of(null, 10, 10),
-                Arguments.of("", "default", "default"),
-                Arguments.of("input", "default", "input"),
-                Arguments.of(null, "default", "default")
-        );
+    @ParameterizedTest
+    @NullSource
+    void testValidateNullInput(String input) {
+        //Test for null input when a numeric value is expected
+        Object defaultNumValue = 10;
+        Object NumExpected = 10;
+
+        Object resultNumInput = InputValidation.validate(input, defaultNumValue);
+        assertEquals(NumExpected, resultNumInput);
+
+        //Test for null input when a string value is expected
+        Object defaultStrValue = "default";
+        Object StrExpected = "default";
+
+        Object resultStrInput = InputValidation.validate(input, defaultStrValue);
+        assertEquals(StrExpected, resultStrInput);
     }
 }
