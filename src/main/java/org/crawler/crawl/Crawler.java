@@ -64,15 +64,19 @@ public class Crawler {
         return page;
     }
 
-    private boolean isExternalUrl (String url) {
+    /**
+     * @implNote Would be private, but is public for testing-purposes
+     */
+    public boolean isExternalUrl(String url) {
         return url.startsWith("http://") || url.startsWith("https://");
     }
 
     /**
      * Filters out the links that are not from the requested domain.
      * @return In case the link is from the requested domain, then true is returned, otherwise false. If no domains are specified, then the link's domain is accepted automatically.
+     * @implNote Would be private, but is public for testing-purposes
      */
-    private boolean isRequestedDomain (String link, String[] domains) {
+    public boolean isRequestedDomain(String link, String[] domains) {
         for (String domain : domains) {
             if (!link.contains(domain)) return false;
         }
@@ -84,8 +88,9 @@ public class Crawler {
      * @param originUrl The origin link from which the links were extracted
      * @param links The links that should be filtered
      * @return The filtered and therefore cleaned links
+     * @implNote Would be private, but is public for testing-purposes
      */
-    private List<String> filterLinks (String originUrl, List<String> links) {
+    public List<String> filterLinks(String originUrl, List<String> links) {
         links = removeDuplicateLinks(links);
         links = filterLinksByDomain(links);
         links = removeLinkLoops(originUrl, links);
