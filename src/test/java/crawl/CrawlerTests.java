@@ -81,4 +81,14 @@ class CrawlerTests {
         assertTrue(crawler.isExternalUrl("https://example.com"));
         assertFalse(crawler.isExternalUrl("/internal/link"));
     }
+
+    @Test
+    public void testFilterLinks() {
+        List<String> links = Arrays.asList("http://example.com", "https://example.com", "https://example.com", "/internal/link", "http://example.net");
+        List<String> expectedLinks = Arrays.asList("https://example.com", "/internal/link", "http://example.net");
+
+        List<String> filteredLinks = crawler.filterLinks("http://example.com", links);
+        assertEquals(expectedLinks.size(), filteredLinks.size());
+        assertTrue(filteredLinks.containsAll(expectedLinks));
+    }
 }
