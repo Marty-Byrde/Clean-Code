@@ -74,4 +74,11 @@ class CrawlerTests {
             assertEquals(0, page.getPageLinks().size());
         }
     }
+
+    @Test
+    public void testIsExternalUrl() {
+        assertTrue(crawler.isExternalUrl("http://example.com"));
+        assertTrue(crawler.isExternalUrl("https://example.com"));
+        assertFalse(crawler.isExternalUrl("/internal/link"));
+    }
 }
