@@ -50,4 +50,17 @@ public class JsoupAdapterTests {
         }
     }
 
+    @Test
+    void testGetLanguage() {
+        when(mockDocument.select("html")).thenReturn(mockElements);
+        when(mockElements.attr("lang")).thenReturn("en");
+
+        String language = JsoupAdapter.getLanguage(mockDocument);
+
+        assertNotNull(language);
+        assertEquals("en", language);
+    }
+
+
+
 }
