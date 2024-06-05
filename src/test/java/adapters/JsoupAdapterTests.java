@@ -70,6 +70,33 @@ public class JsoupAdapterTests {
         verify(mockDocument).select("h1, h2, h3, h4, h5, h6");
     }
 
+    @Test
+    void testGetLinks() {
+        when(mockDocument.select("a")).thenReturn(mockElements);
+        Elements mockElements = new Elements(
+                Stream.of(
+                        createMockElementWithHref("http://example.com"),
+                        createMockElementWithHref("http://example.org"),
+                        createMockElementWithHref("http://example.net")
+                ).collect(Collectors.toList())
+        );
+
+        when(mockDocument.select("a")).thenReturn(mockElements);
+
+        List<String> links = JsoupAdapter.getLinks(mockDocument);
+
+        assertNotNull(links);
+        assertEquals(3, links.size());
+        assertTrue(links.contains("http://example.com"));
+        assertTrue(links.contains("http://example.org"));
+        assertTrue(links.contains("http://example.net"));
+    }
+
+    private Element createMockElementWithHref(String href) {
+        Element element = mock(Element.class);
+        when(element.attr("href")).thenReturn(href);
+        return element;
+    }
 
 
 }
