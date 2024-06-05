@@ -26,16 +26,16 @@ class InputValidationTests {
     void testValidateNullInput(String input) {
         //Test for null input when a numeric value is expected
         Object defaultNumValue = 10;
-        Object NumExpected = 10;
+        Object numExpected = 10;
 
         Object resultNumInput = InputValidation.validate(input, defaultNumValue);
-        assertEquals(NumExpected, resultNumInput);
+        assertEquals(numExpected, resultNumInput);
 
         //Test for null input when a string value is expected
         Object defaultStrValue = "default";
-        Object StrExpected = "default";
+        Object strExpected = "default";
 
         Object resultStrInput = InputValidation.validate(input, defaultStrValue);
-        assertEquals(StrExpected, resultStrInput);
+        assertEquals(strExpected, resultStrInput);
     }
 }
